@@ -47,10 +47,39 @@
                  (cons :integer ,(unparse-pattern modulus))
                  (cons :integer ,(unparse-pattern public-exponent))))))
 
-(optima:defpattern rsa-public-key-info (m e)
-  `(subject-public-key-info
-    (algorithm-identifier (equalp #(1 2 840 113549 1 1 1)) (equal '(:null)))
-    (subject-public-key (rsa-public-key ,m ,e))))
+(defstruct (rsa-public-key-info (:include constructor-pattern)
+                                (:constructor make-rsa-public-key-info (modulus public-exponent
+                                                                        &aux (subpatterns
+                                                                              (list modulus public-exponent))))))
+
+(defmethod constructor-pattern-destructor-sharable-p ((x rsa-public-key-info) (y rsa-public-key-info))
+  t)
+
+(defmethod constructor-pattern-make-destructor ((pattern rsa-public-key-info) var)
+  (let ((it (gensym))
+        (key (gensym))
+        (m (gensym))
+        (e (gensym)))
+    (make-destructor :bindings `((,it (optima:match ,var
+                                        ((subject-public-key-info
+                                          (algorithm-identifier (equalp #(1 2 840 113549 1 1 1)) (equal '(:null)))
+                                          (subject-public-key ,key))
+                                         (optima:match ,key
+                                           ((rsa-public-key ,m ,e)
+                                            (list ,m ,e)))))))
+                     :predicate-form it
+                     :accessor-forms (list `(first ,it)
+                                           `(second ,it)))))
+
+(defmethod parse-constructor-pattern ((name (eql 'rsa-public-key-info)) &rest args)
+  (apply #'make-rsa-public-key-info (mapcar #'parse-pattern args)))
+
+(defmethod unparse-pattern ((pattern rsa-public-key-info))
+  (destructuring-bind (modulus public-exponent)
+      (constructor-pattern-subpatterns pattern)
+    `(subject-public-key-info
+      (algorithm-identifier (equalp #(1 2 840 113549 1 1 1)) (equal '(:null)))
+      (subject-public-key (rsa-public-key ,modulus ,public-exponent)))))
 
 (optima:defpattern rsa-private-key (&key version modulus public-exponent private-exponent prime1 prime2 exponent1 exponent2 coefficient other-prime-infos)
   `(list (cons :sequence
