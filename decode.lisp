@@ -54,7 +54,6 @@
                  (multiple-value-list
                   (truncate 1st-byte 40))
                  (loop with p = (1+ start)
-                       for byte = (aref data p)
                        collect
                        (loop with result = 0
                              for id = (aref data p)
