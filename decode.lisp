@@ -116,7 +116,13 @@
                  (:sequence
                   (decode data :start chunk-start :end chunk-end))
                  (:bit-string
-                  (subseq data (1+ chunk-start) chunk-end))
+                  (let ((unused-bits (aref data chunk-start))
+                        (res (subseq data (1+ chunk-start) chunk-end)))
+                    (unless (= unused-bits 0)
+                      (setf (aref res (1- chunk-end))
+                            (logxor (aref res (1- chunk-end))
+                                    (1- (expt 2 unused-bits)))))
+                    res))
                  (:octet-string
                   (subseq data chunk-start chunk-end))
                  (:object-identifier
