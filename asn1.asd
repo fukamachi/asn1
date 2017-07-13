@@ -3,7 +3,7 @@
   :version "0.1.0"
   :author "Eitaro Fukamachi"
   :license "BSD 2-Clause"
-  :description "ASN.1 decoder"
+  :description "ASN.1 encoder/decoder"
   :depends-on ("asn1/main"))
 
 (register-system-packages "optima" '(#:optima.core))

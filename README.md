@@ -1,6 +1,6 @@
 # asn1
 
-ASN.1 decoder.
+ASN.1 encoder/decoder.
 
 ## Usage
 
