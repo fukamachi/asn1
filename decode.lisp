@@ -76,7 +76,7 @@
            (tag-num (logand 1st-byte 31))
            (tag
              (ecase tag-class
-               (0 (and (< tag-num 20)
+               (0 (and (< tag-num (length +tag-types+))
                        (aref +tag-types+ tag-num)))
                ;; context
                (2 tag-num))))
