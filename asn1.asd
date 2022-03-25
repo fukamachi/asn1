@@ -11,5 +11,3 @@
   :class :package-inferred-system
   :depends-on ("asn1/tests/main")
   :perform (test-op (o c) (symbol-call :rove '#:run c)))
-
-(register-system-packages "optima" '(#:optima.core))

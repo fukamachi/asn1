@@ -37,15 +37,25 @@ cwIDAQAB"))
 ;          64 111 244 6 244 42 187 26 99 54 49 217 96 41 52 115 2 3 1 0 1))))
 ```
 
-### Using with Optima & Ironclad
+### Using with Trivia & Ironclad
 
 ```common-lisp
-(ql:quickload '(:optima :ironclad))
+(ql:quickload '(:trivia :ironclad))
 
-(optima:match (asn1:decode *public-key*)
+(trivia:match (asn1:decode *public-key*)
   ((asn1:rsa-public-key-info n e)
    (ironclad:make-public-key :rsa :n n :e e)))
 ;=> #<IRONCLAD::RSA-PUBLIC-KEY {1004C2BA63}>
+
+
+(trivia:match (asn1:decode *private-key*)
+  ((asn1:rsa-private-key :modulus n
+                         :public-exponent e
+                         :private-exponent d
+                         :prime1 p
+                         :prime2 q)
+   (ironclad:make-private-key :rsa :n n :e e :d d :p p :q q)))
+;=> #<IRONCLAD:RSA-PRIVATE-KEY {1005C460F3}>
 ```
 
 ## Author
