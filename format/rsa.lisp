@@ -18,7 +18,7 @@
        (subject-public-key (rsa-public-key ,modulus ,public-exponent)))))
 
 (defpattern rsa-public-key (modulus public-exponent)
-  `(access #'asn1:decode
+  `(access #'asn1/decode:decode
            (list (list :sequence
                        (cons :integer ,modulus)
                        (cons :integer ,public-exponent)))))
